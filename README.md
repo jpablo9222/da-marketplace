@@ -49,7 +49,9 @@ After installation, reload your plugins or restart your Claude Code session to a
 #### Test an Installed Skill
 Once reloaded, Claude will automatically leverage the skills based on context, or you can invoke them directly in conversation:
 
-> *Help me evaluate wheter a recent experiment was succesful*
+> *Help me evaluate whether a recent experiment was succesful*
+
+> *I want to perform an EDA on a dataset*
 
 ---
 
