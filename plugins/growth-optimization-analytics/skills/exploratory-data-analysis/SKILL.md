@@ -1,5 +1,5 @@
 ---
-name: eda-analytics
+name: exploratory-data-analysis
 description: >
   Multi-stage EDA pipeline (6 major stages with sub-stages) for turning raw business
   data into validated, confidence-labeled analytical notebooks. Use this skill whenever the user asks for
