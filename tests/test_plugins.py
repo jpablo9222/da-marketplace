@@ -45,6 +45,12 @@ def test_plugin_field_types(plugin_dir):
         f"{ctx}: 'version' must be SemVer X.Y.Z, got {manifest['version']!r}."
     )
     assert is_str_list(manifest["keywords"]), f"{ctx}: 'keywords' must be a non-empty list of strings."
+    # 'category'/'tags' are optional overrides consumed by utils/marketplace_sync.py;
+    # when present they must be well-formed, but omitting them is valid.
+    if "category" in manifest:
+        assert is_nonempty_str(manifest["category"]), f"{ctx}: 'category' must be a non-empty string."
+    if "tags" in manifest:
+        assert is_str_list(manifest["tags"]), f"{ctx}: 'tags' must be a non-empty list of strings."
 
 
 def test_plugin_author(plugin_dir):
