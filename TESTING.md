@@ -51,6 +51,16 @@ pytest -m marketplace                           # only marketplace catalog check
 
 Markers available: `marketplace`, `plugin`, `skill`.
 
+**Iterating on a brand-new plugin, before it's registered in `marketplace.json`:**
+registration now happens automatically (`python utils/marketplace_sync.py`,
+run manually or by CI's `pr-validate.yml`), so a freshly-added plugin will
+fail two catalog-registration checks until that sync runs. To validate
+everything else about your new skill/plugin in the meantime:
+
+```bash
+pytest -k "not test_plugin_name_matches_marketplace and not test_catalog_and_disk_agree"
+```
+
 ---
 
 ## What gets validated
@@ -70,8 +80,9 @@ Markers available: `marketplace`, `plugin`, `skill`.
    (see the example below). The `name` must equal the folder name.
 2. **Bump the plugin version** in `plugins/<plugin-id>/.claude-plugin/plugin.json`
    following [SemVer](https://semver.org/).
-3. **If you're adding a whole new plugin**, register it in
-   `.claude-plugin/marketplace.json` under `plugins[]` (with `source: "./plugins/<id>"`).
+3. **If you're adding a whole new plugin**, `marketplace.json` registration is
+   automatic — run `python utils/marketplace_sync.py` locally (or let CI's
+   `pr-validate.yml` commit it for you) rather than hand-editing `plugins[]`.
 4. **Run `pytest`** and make sure everything is green.
 5. Open your PR.
 
@@ -112,7 +123,7 @@ description: >
 | `'name' must be lowercase kebab-case` | uppercase/underscores/spaces in `name` | use `lower-case-hyphens` only |
 | `unexpected frontmatter key(s) [...]` | non-standard frontmatter field | remove it, or add it to `ALLOWED_FRONTMATTER_FIELDS` in `tests/test_skills.py` if it's now official |
 | `'version' must be SemVer X.Y.Z` | version isn't `X.Y.Z` | use e.g. `1.2.0` |
-| `Plugins exist on disk but are not registered in marketplace.json` | new plugin dir not added to the catalog | add a `plugins[]` entry in `marketplace.json` |
+| `Plugins exist on disk but are not registered in marketplace.json` / `plugin '...' is not registered in marketplace.json` | new plugin dir not synced into the catalog yet | run `python utils/marketplace_sync.py` (or wait for CI's `pr-validate.yml` to do it and commit the result); while iterating, deselect these two checks — see "Running a subset" above |
 | `'source' path does not exist on disk` | catalog `source` points nowhere | fix the path to `./plugins/<id>` |
 
 ---
